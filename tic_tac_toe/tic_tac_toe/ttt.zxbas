@@ -1,0 +1,63 @@
+10 REM ***************** ZX Code Club **********************
+15 REM ************* Noughts and Crosses *******************
+20 REM ***************** Gary Plowman **********************
+30 ink 7: paper 6: border 7: cls : let ply=1: let win=0: dim a(9,2): let sq=0
+40 go sub 90
+50 go to 300
+60 REM ******************* Draw Board ***********************
+90 print at 2,10; ink 1; "Tic Tac Toe"
+110 plot ink 5; 100,40: draw ink 5; 0,100
+120 plot ink 5; 150,40: draw ink 5; 0,100
+130 plot ink 5; 65,70: draw ink 5; 120,0
+140 plot ink 5; 65,110: draw ink 5; 120,0
+160 REM State 1=player 1, 2=player 2
+175 ink 5: plot 50,170: draw -40,-40: plot 10,170: draw 40,-40
+180 circle ink 4; 220,150,20
+190 print ; ink 0; paper 3; at 14,0; "1 2 3"; at 15,0; "4 5 6"; at 16,0; "7 8 9"
+210 return
+300 REM ***************** Test Press **************************
+310 print at 18,1; ink 7; paper 6-ply; "PLAYER "; ply; " Choose square 1 - 9"
+320 let i$=inkey$
+315 rem print at 25,1;"inkey ";i$
+317 rem print at 30,1;"square ";square
+330 if i$>="1" AND i$<="9" then let square=val(i$): go sub 1000
+340 if i$="" then goto 320
+350 go sub 2000: rem ***** Test for winning conditions :)
+355 if sq=9 then let win=-1
+360 if win>0 then print at 18,1; "PLAYER "; win;" has WON!": beep .4,3: beep 2,10: goto 10
+370 if win<0 then print at 18,1; "GAME DRAWN - RESTARTING": beep .4,3: beep 2,10: goto 10
+400 goto 300
+1000 rem ************** Check Squares **************************
+1010 if a(square,1)=1 OR a(square,2)=1 then print at 18,1; ink 3; "Square Taken Already": beep .3,1: goto 1050
+1020 let a(square,ply)=1: let ply=ply+1: let sq=sq+1
+1025 print at 18,1; ink 4; "Good Move!": beep .4,12
+1030 if ply=3 then let ply=1
+1040 gosub 3000 rem ************ draw move *********************
+1050 print at 18,1;"                                         "
+1090 return
+2000 rem ************* winning condition check *****************
+2010 for n=1 to 2
+2020 if a(1,n)=1 and a(2,n)=1 and a(3,n)=1 then let win=n
+2030 if a(1,n)=1 and a(4,n)=1 and a(7,n)=1 then let win=n
+2040 if a(2,n)=1 and a(5,n)=1 and a(8,n)=1 then let win=n
+2050 if a(3,n)=1 and a(6,n)=1 and a(9,n)=1 then let win=n
+2060 if a(3,n)=1 and a(5,n)=1 and a(7,n)=1 then let win=n
+2070 if a(1,n)=1 and a(5,n)=1 and a(9,n)=1 then let win=n
+2080 if a(4,n)=1 and a(5,n)=1 and a(6,n)=1 then let win=n
+2090 if a(7,n)=1 and a(8,n)=1 and a(9,n)=1 then let win=n
+2100 next n
+2110 return
+3000 rem ************** Draw Move **************************
+3010 let posx=80: let posy=130: rem ******* where to draw
+3020 if square=1 then let posx=80: let posy=130
+3030 if square=2 then let posx=130: let posy=130
+3040 if square=3 then let posx=180: let posy=130
+3050 if square=4 then let posx=80: let posy=100
+3060 if square=5 then let posx=130: let posy=100
+3070 if square=6 then let posx=180: let posy=100
+3080 if square=7 then let posx=80: let posy=70
+3090 if square=8 then let posx=130: let posy=70
+3100 if square=9 then let posx=180: let posy=70
+3300 if ply=1 then circle ink 4; posx-10, posy-10,10
+3310 if ply=2 then ink 5: plot posx,posy: draw -20,-20: plot posx-20,posy: draw 20,-20
+3350 return
