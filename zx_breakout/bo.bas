@@ -16,7 +16,7 @@
 130 go sub 1000: REM main loop for game
 200 goto 30
 300 let ply=2: let win=0: dim a(9,2): dim d(30): let lvl=1: let posy=30: let x=10: let time=0: let score=0: let timer=0: let mov=11: let pos=11: let vx=0: let vy=0: let speed=1: let ball=0: let bx=0: let by=0: let score2=0
-310 let b$= " "+CHR$ (147)+CHR$ (145)+ " ": let w$=CHR$(146)+CHR$(146)
+310 let b$= " "+CHR$ (147)+CHR$ (145)+ " ": let w$=CHR$(146)+CHR$(146): let ballmove = 0
 400 return
 500 CLS
 510 let w$=CHR$ (146)
@@ -32,12 +32,15 @@
 1010 let i$=inkey$: let kemp=IN 31
 1020 let timer=timer+1
 1030 if (i$="z" OR kemp=2) AND x>2 then let x=x-1:
-1040 if (i$="x" OR kemp=1) AND x<29 then let x=x+1
-1045 if i$="z" OR i$="x" OR kemp>0 then print at 20,x-2; " ";b$;" "
-1050 if (i$=chr$(32) OR kemp=16) AND ball = 0 then let vx=(rnd*1.5)-(rnd*1.5): let vy=1: let ball=1: let bx=x: let by=19
+1040 if (i$="x" OR kemp=1) AND x<30 then let x=x+1
+1045 if i$="z" OR i$="x" OR kemp>0 then print at 20,x-2; "";b$;""
+1050 if (i$=chr$(32) OR kemp=16) AND ball = 0 then let vx=(rnd*1.5)-(rnd*1.5): let vy=-1: let ball=1: let bx=x: let by=19
 1060 if timer = 5 then go sub 3000
+1064 ballmove = ballmove + 1
+1065 if ballmove<10 then goto 1010
 1070 if ball=1 then go sub 4000
-1080 print at 0,2; "SCORE:";score;" (lvl:";lvl;") Lives:";lives
+1075 ballmove = 0
+1080 print at 0,2; "SCORE:";score;" (Lvl:";lvl;") Lives:";lives
 2000 go to 1010
 3000 REM draw blocks
 3010 for n = 1 to 20 step 2
@@ -52,7 +55,7 @@
 4005 print at by,bx;" "
 4010 let bx=bx+vx: let by=by+vy 
 4014 let y$=SCREEN$(int(by), int(bx))
-4015 if y$="_" then let score = score+1: beep .008,vx+bx: let score2=score2+2: let vy=-vy*speed 
+4015 if y$="_" then let score = score+1: beep .008,vx+bx: let score2=score2+1: let vy=-vy*speed 
 4016 if by>=19 and abs (bx-x)<2 then let vx=((rnd*2)+1)-((rnd*2)+1): let vy=-vy*speed: print at 20,x-2;" ";b$;" "
 4020 print at by,bx; ink 2; chr$(144)
 4040 if bx>29 then let vx=-(vx*speed)
@@ -70,7 +73,7 @@
 5110 if inkey$="" then go to 5110
 5120 go to 30
 6000 REM ***** next level
-6005 let lvl=lvl+1: CLS: print at 10,10; flash 1; "L E V E L";lvl
+6005 let lvl=lvl+1: CLS: print at 10,10; flash 1; "L E V E L ";lvl
 6010 beep 1,13
 6020 let timer=2
 6050 for n=1 to 100
