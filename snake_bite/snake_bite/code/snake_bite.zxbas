@@ -1,0 +1,96 @@
+1 REM ********** library includes *********
+2 REM **** needed for SCREEN$ in zxbasic
+# include <screen.bas>
+3 REM *************************************
+
+10 REM ****** ZX Spectrum Code Club ******
+15 REM * SNAKE BITE by Gary Plowman 2015 *
+20 REM ***********************************
+25 Let hsc=0: go sub 7000:
+30 INK 1: PAPER 7: BORDER 4: CLS
+45 REM ****** Initialising variables *****
+50 print at 2,10; ink 7; bright 1; paper 2; "SNAKE BITE": print at 4,5; "Control your Snake *"
+55 let lives=3
+60 print at 7,5; "Avoid your tail! ******"
+65 print at 8,5; "Eat the apples "; paper 6;"o"
+70 print at 11,2; "Controls: "; at 12,2; "Q/A= up/down, O/P= Left/Right"
+80 print at 18,5; flash 1; "PRESS A KEY TO START": pause 0
+100 go sub 300: REM initialsie
+130 go sub 1000: REM main loop for game
+200 goto 30:
+300 REM ****** Setup ******
+310 let x=10: let y=10: let vx=0: let vy=0: let score=0: let lvl=1: let ax=1: let ay=1: let ax2=0: let ay2=0: let loot=0: let snk=5:let dx=x-5: let dy=y: let longer=0: let snkpos=1: let ny=0: let nx=0: let ly=0: let lx=0
+330 return
+1000 cls
+1010 for n = 0 to 19:
+1030 print at n,0; CHR$ (136); at n,31; CHR$(136)
+1040 next n
+1045 for n=1 to 30:
+1050 print at 0,n; CHR$(136); at 19,n; CHR$(136)
+1060 next n
+1087 print at int (rnd*15)+3, int (rnd*25)+3; paper 6; "o"
+1095 print at 20,1; "Score: "; score
+1096 for n=1 to 5:
+1097 print at y,x-n; "*"
+1098 next n
+1099 print at y,x; "*" 
+1100 let i$=inkey$: let kemp=IN 31
+1110 if (i$="q" OR kemp=8) AND y>2 then let vy=-1: let vx=0
+1120 if (i$="a" OR kemp=4) AND y<19 then let vy=1: let vx=0
+1130 if (i$="o" OR kemp=1) AND x>2 then let vx=-1: let vy=0
+1140 if (i$="p" OR kemp=2) AND x<30 then let vx=1: let vy=0
+1141 pause 10
+1145 let x=x+vx: let y=y+vy
+1150 if x=0 then go sub 2000
+1160 if x=30 then go sub 2000
+1170 if y=19 then go sub 2000
+1180 if y=0 then go sub 2000
+1185 let a$=SCREEN$ (y,x)
+1200 if a$="o" then go sub 3000
+1210 if vx <> 0 OR vy <> 0 then go sub 2500
+1230 print at y,x; "*"
+1300 go to 1100
+1900 stop
+2000 print at 10,10; "DEAD!"; at 15,10; flash 1; "RESTARTING": beep 2,1: pause 1000
+2010 if score > hsc then let hsc = score
+2100 goto 30
+2500 REM ****** Draw Snake ******
+2510 if a$="*" AND (vx<>0 OR vy <> 0) then go sub 2000
+2520 print at dy,dx; " ":
+2525 if longer>0 then let longer=longer-1: return
+2526 let mx=0: let nx=0: let ny=0
+2530 if SCREEN$ (dy-1,dx)= "*" then let ny=-1: let mx=mx+1
+2540 if SCREEN$ (dy+1,dx)= "*" then let ny=1: let mx=mx+1
+2550 if SCREEN$ (dy,dx-1)= "*" then let nx=-1: let mx=mx+1
+2560 if SCREEN$ (dy,dx+1)= "*" then let nx=1: let mx=mx+1
+2570 if mx>1 then go sub 4000
+2575 let dy = dy + ny: let dx = dx + nx
+2580 RETURN
+3000 REM ****** Eat Apple ******
+3010 let score = score + (INT (RND*4) +1)
+3020 print at 20,1; paper 1; ink 7; "Score: "; score; at 20,16; "Hi-Score: "; hsc: beep 0.05,20
+3030 let ax=INT(RND*25)+3: let ay = INT(RND*15)+3
+3040 if SCREEN$(ay,ax)="*" then goto 3030
+3050 print at ay,ax; paper 6; "o": beep 0.1,1: let longer=2
+3060 RETURN
+4000 REM ****** Follow correct route ******
+4010 let r1=0: let r2=0
+4020 if SCREEN$ (dy+ny,dx)="*" then let r1=r1+1
+4030 if SCREEN$ (dy+(ny*2),dx)="*" then let r1=r1+1
+4040 if SCREEN$ (dy+(ny*3),dx)="*" then let r1=r1+1
+4050 if SCREEN$ (dy,dx+nx)="*" then let r2=r2+1
+4060 if SCREEN$ (dy,dx+(nx*2))="*" then let r2=r2+1
+4070 if SCREEN$ (dy,dx+(nx*3))="*" then let r2=r2+1
+4075 if r1>r2 then let nx=0: let ly=ny: let lx=0: RETURN
+4080 if r1<r2 then let ny=0: let lx=nx: let ly=0: RETURN
+4090 if r1=r2 then let nx=lx: let ny=ly
+4095 print at 19,10; "R1=";r1; " R2=";r2
+4100 RETURN
+7000 for n = 0 to 7
+7010 READ dat
+7020 POKE USR "a"+n, dat
+7030 next n
+7040 RETURN
+7050 DATA 16,60,66,218,75,66,60,8 
+
+
